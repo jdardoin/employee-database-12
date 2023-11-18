@@ -144,6 +144,159 @@ function addDepartment() {
     });
 }
 
+function addRole() {
+  db.query("Select * FROM department", function (err, results) {
+    if (err) {
+      console.log(err);
+    }
+    let departmentArray = results.map((department) => {
+      return {
+        name: department.name,
+        value: department.id,
+      };
+    });
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "title",
+          message: "What is the name of the role?",
+        },
+        {
+          type: "input",
+          name: "salary",
+          message: "What is the salary of the role?",
+        },
+        {
+          type: "list",
+          name: "department",
+          message: "What department does the role belong to?",
+          choices: departmentArray,
+        },
+      ])
+      .then((answer) => {
+        db.query(
+          "INSERT INTO role SET ?",
+          {
+            title: answer.title,
+            salary: answer.salary,
+            department_id: answer.department,
+          },
+          function (err, results) {
+            if (err) {
+              console.log(err);
+            }
+            viewAllRoles();
+          }
+        );
+      });
+  });
+}
 
+function addEmployee() {
+  db.query("Select * FROM role", function (err, results) {
+    if (err) {
+      console.log(err);
+    }
+    let roleArray = results.map((role) => {
+      return {
+        name: role.title,
+        value: role.id,
+      };
+    });
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "first_name",
+          message: "What is the employee's first name?",
+        },
+        {
+          type: "input",
+          name: "last_name",
+          message: "What is the employee's last name?",
+        },
+        {
+          type: "list",
+          name: "role",
+          message: "What is the employee's role?",
+          choices: roleArray,
+        },
+      ])
+      .then((answer) => {
+        db.query(
+          "INSERT INTO employee SET ?",
+          {
+            first_name: answer.first_name,
+            last_name: answer.last_name,
+            role_id: answer.role,
+          },
+          function (err, results) {
+            if (err) {
+              console.log(err);
+            }
+            viewAllEmployees();
+          }
+        );
+      });
+  });
+}
+
+function updateEmployeeRole() {
+  db.query("Select * FROM employee", function (err, results) {
+    if (err) {
+      console.log(err);
+    }
+    let employeeArray = results.map((employee) => {
+      return {
+        name: employee.first_name + " " + employee.last_name,
+        value: employee.id,
+      };
+    });
+    inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "employee",
+          message: "Which employee's role would you like to update?",
+          choices: employeeArray,
+        },
+      ])
+      .then((answer) => {
+        db.query("Select * FROM role", function (err, results) {
+          if (err) {
+            console.log(err);
+          }
+          let roleArray = results.map((role) => {
+            return {
+              name: role.title,
+              value: role.id,
+            };
+          });
+          inquirer
+            .prompt([
+              {
+                type: "list",
+                name: "role",
+                message: "What is the employee's new role?",
+                choices: roleArray,
+              },
+            ])
+            .then((answer2) => {
+              db.query(
+                "UPDATE employee SET role_id = ? WHERE id = ?",
+                [answer2.role, answer.employee],
+                function (err, results) {
+                  if (err) {
+                    console.log(err);
+                  }
+                  viewAllEmployees();
+                }
+              );
+            });
+        });
+      });
+  });
+}
 
 Work();
