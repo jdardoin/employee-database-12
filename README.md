@@ -1,2 +1,2 @@
-# employee-database-12
+# Employee-database-12
 Track employees roles, departments and salary
