@@ -9,7 +9,7 @@ Download github repo and run node server.js from terminal in VS code.
 ## License 
 MIT License
 
-#Link to screen recording
+##Link to screen recording
 https://drive.google.com/file/d/1dFWulntw_RSKYhfCnqHan3vWOqJm9z1i/view
 
 
